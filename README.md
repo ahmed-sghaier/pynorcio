@@ -11,3 +11,4 @@ Python IRC bot
 Core module offers the following commands :
 * HELP : offers help for the bot commands
 * PING : a command to check that the bot is online.
+* TIME : a command to check the current time.
