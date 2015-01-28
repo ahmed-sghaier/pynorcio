@@ -1,0 +1,2 @@
+# pynorcio
+Python IRC bot
