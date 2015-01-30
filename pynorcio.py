@@ -5,16 +5,17 @@ import string
 
 HOST="irc.freenode.net"
 PORT=6667
-NICK="pyneo"
-IDENT="pyneo"
-REALNAME="pyneo"
+NICK="pynorcio"
+IDENT="pynorcio"
+REALNAME="Python IRC Bot"
+CHANNELS = ["#Neo31", "#pynorcio"]
 readbuffer=""
 
 s=socket.socket( )
 s.connect((HOST, PORT))
 s.send("NICK %s\r\n" % NICK)
 s.send("USER %s %s bla :%s\r\n" % (IDENT, HOST, REALNAME))
-s.send("JOIN #Neo31\r\n")
+s.send("JOIN "+CHANNELS[0]+"\r\n")
 
 while 1:
     readbuffer=readbuffer+s.recv(1024)
@@ -26,6 +27,10 @@ while 1:
         if(line[0]=="PING"):
             s.send("PONG %s\r\n" % line[1])
         elif(line[1]=="PRIVMSG"):
+            # TODO : extract sender, receiver, message variables here
+            sndr = ""
+            rcvr = ""
+            msg = ""
             if(line[3]==":PING"):
                 s.send("PRIVMSG "+line[2]+" :PONG\r\n")
             elif(line[3]==":whois"):
