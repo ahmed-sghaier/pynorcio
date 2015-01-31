@@ -15,7 +15,8 @@ s=socket.socket( )
 s.connect((HOST, PORT))
 s.send("NICK %s\r\n" % NICK)
 s.send("USER %s %s bla :%s\r\n" % (IDENT, HOST, REALNAME))
-s.send("JOIN "+CHANNELS[0]+"\r\n")
+for channel in CHANNELS:
+    s.send("JOIN "+channel+"\r\n")
 
 while 1:
     readbuffer=readbuffer+s.recv(1024)
