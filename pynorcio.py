@@ -2,6 +2,7 @@
 import sys
 import socket
 import string
+import datetime
 
 HOST = "irc.freenode.net"
 PORT = 6667
@@ -29,15 +30,23 @@ while 1:
         line = string.split(line)
         if (line[0] == "PING"):
             s.send("PONG %s\r\n" % line[1])
-        elif (line[1] == "PRIVMSG"):
+        elif ( (line[1] == "PRIVMSG") and line[3].startswith(":" + NICK) ):
             sndr = line[0]
             rcvr = line[2]
             msg = line[3]
-            print "sender is : ", sndr
-            print  "receiver is : ", rcvr
-            print  "message is : ", msg
-            if (line[3]==":PING"):
-                s.send("PRIVMSG "+line[2]+" :PONG\r\n")
-            elif (line[3]==":whois"):
-                s.send("PRIVMSG "+line[2]+" :My name is "+REALNAME+", and I am a python IRC bot.\r\n")
+            cmd = line[4]
+            rply = ""
+            eof = "\r\n"
+            if (rcvr.startswith("#")):
+                rply = "PRIVMSG " + rcvr + " :"
+            else:
+                rply = "PRIVMSG " + sndr + " :"
+            if (cmd == "ping"):
+                s.send(rply + "pong" + eof)
+            elif (cmd == "whois"):
+                s.send(rply + "My name is " + REALNAME + ", and I am a python IRC bot." + eof)
+            elif (cmd == "help"):
+                s.send(rply + NICK + " help command (commands : ping, whois)" + eof)
+            elif (cmd == "time"):
+                s.send(rply + datetime.datetime.now().time().isoformat() + eof)
 
