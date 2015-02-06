@@ -4,6 +4,7 @@ import socket
 import string
 import datetime
 
+
 HOST = "irc.freenode.net"
 PORT = 6667
 NICK = "pynorcio"
@@ -22,7 +23,7 @@ for channel in CHANNELS:
     s.send("JOIN " + channel + " :Hello \r\n")
 
 while 1:
-    readbuffer = readbuffer + s.recv(1024)
+    readbuffer = readbuffer+s.recv(1024)
     temp = string.split(readbuffer, "\n")
     readbuffer = temp.pop( )
     for line in temp:
@@ -32,8 +33,12 @@ while 1:
             s.send("PONG %s\r\n" % line[1])
         elif ( (line[1] == "PRIVMSG") and line[3].startswith(":" + NICK) ):
             sndr = line[0]
+            e=sndr.find("!")
+            print "sender is : " , sndr[1:e]
             rcvr = line[2]
-            msg = line[3]
+            print "receiver is : " , rcvr 
+            msg = line[4]
+            print "message  is : " , msg
             cmd = line[4]
             rply = ""
             eof = "\r\n"
@@ -49,4 +54,3 @@ while 1:
                 s.send(rply + NICK + " help command (commands : ping, whois)" + eof)
             elif (cmd == "time"):
                 s.send(rply + datetime.datetime.now().time().isoformat() + eof)
-
