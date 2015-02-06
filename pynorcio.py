@@ -4,7 +4,6 @@ import socket
 import string
 import datetime
 
-
 HOST = "irc.freenode.net"
 PORT = 6667
 NICK = "pynorcio"
@@ -27,19 +26,16 @@ while 1:
     temp = string.split(readbuffer, "\n")
     readbuffer = temp.pop( )
     for line in temp:
+        msg = line
         line = string.rstrip(line)
         line = string.split(line)
         if (line[0] == "PING"):
             s.send("PONG %s\r\n" % line[1])
         elif ( (line[1] == "PRIVMSG") and line[3].startswith(":" + NICK) ):
-            sndr = line[0]
-            e=sndr.find("!")
-            print "sender is : " , sndr[1:e]
+            sndr = line[0][1:line[0].find("!")]
             rcvr = line[2]
-            print "receiver is : " , rcvr 
-            msg = line[4]
-            print "message  is : " , msg
             cmd = line[4]
+            msg = msg[string.find(msg, ":", 1)+1:]
             rply = ""
             eof = "\r\n"
             if (rcvr.startswith("#")):
