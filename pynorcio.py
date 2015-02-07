@@ -37,22 +37,42 @@ class Pynorcio:
     def read(self, line, msg):
         sndr = line[0][1:line[0].find("!")]
         rcvr = line[2]
+        rply = ""
+        cmd = line[4]
+        to = ""
+        if (rcvr.startswith("#")):
+            to = rcvr
+        else:
+            to = sndr
+        if (cmd == "ping"):
+            self.write(to, self.query(line, msg))
+        elif (cmd == "whois"):
+            self.write(to, self.query(line, msg))
+        elif (cmd == "help"):
+            self.write(to, self.query(line, msg))
+        elif (cmd == "time"):
+            self.write(to, self.query(line, msg))
+
+    def write(self, to, output):
+        for line in output:
+            self.s.send("PRIVMSG " + to + " :" + line + "\r\n")
+        return ""
+
+    def query(self, line, msg):
+        sndr = line[0][1:line[0].find("!")]
+        rcvr = line[2]
         cmd = line[4]
         msg = msg[string.find(msg, ":", 1)+1:]
-        rply = ""
+        rply = []
         eof = "\r\n"
-        if (rcvr.startswith("#")):
-            rply = "PRIVMSG " + rcvr + " :"
-        else:
-            rply = "PRIVMSG " + sndr + " :"
         if (cmd == "ping"):
-            self.s.send(rply + "pong" + eof)
+            return ["pong"]
         elif (cmd == "whois"):
-            self.s.send(rply + "My name is " + self.conf.REALNAME + ", and I am a python IRC bot." + eof)
+            return ["My name is " + self.conf.REALNAME + ", and I am a python IRC bot."]
         elif (cmd == "help"):
-            self.s.send(rply + self.conf.NICK + " help command (commands : ping, whois)" + eof)
+            return [self.conf.NICK + " help command (commands : ping, whois)"]
         elif (cmd == "time"):
-            self.s.send(rply + datetime.datetime.now().time().isoformat() + eof)
+            return [datetime.datetime.now().time().isoformat()]
 
 if __name__ == '__main__':
     bot = Pynorcio()
